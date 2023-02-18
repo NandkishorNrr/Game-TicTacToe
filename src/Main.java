@@ -1,4 +1,3 @@
-import javax.security.auth.x500.X500Principal;
 import java.util.*;
 
 public class Main {
@@ -14,40 +13,97 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Scanner in = new Scanner(System.in);
         Random random = new Random();
+        Scanner in = new Scanner(System.in);
 
-        while (moves <= 9) {
-            printBoard();
-            System.out.println("\nYour chance >>>");
+        System.out.println("*** Welcome ***");
+        System.out.println("Play with:\n\t1)Friend:\n\t2)Computer:\n\t");
+        int player = in.nextInt();
 
-            int loc = in.nextInt();
-            while (set.contains(loc)){
-                System.out.println("\nFill right box >>>");
+        if (player == 1){
+            System.out.println("Enter player1 name: ");
+            String player1 = in.next();
+            System.out.println("Enter player2 name: ");
+            String player2 = in.next();
+
+            while (moves <= 9) {
+                printBoard();
+
+                System.out.println(player1 + " >>>");
+                int loc = in.nextInt();
+                while (set.contains(loc)){
+                    System.out.println("\n'" + player1.toUpperCase() + "' Fill right box >>>");
+                    loc = in.nextInt();
+                }
+                set.add(loc);
+                play('P', loc);
+
+                int win = win();
+
+                if (win > 0){
+                    printBoard();
+                    winner(win, player1, player2);
+                    break;
+                }
+
+                printBoard();
+                System.out.println(player2 + " >>>");
                 loc = in.nextInt();
+                while (set.contains(loc)){
+                    System.out.println("\n'" + player2.toUpperCase() + "' Fill right box >>>");
+                    loc = in.nextInt();
+                }
+                set.add(loc);
+                play('Q', loc);
+
+                win = win();
+
+                if (win > 0){
+                    printBoard();
+                    winner(win, player1, player2);
+                    break;
+                }
             }
-            set.add(loc);
-            play('U', loc);
+        }
+
+        else if (player == 2) {
+            System.out.println("Enter your name: ");
+            String user = in.next();
+            String computer = "Computer";
+
+            while (moves <= 9) {
+                printBoard();
+
+                System.out.println(user + " >>>");
+                int loc = in.nextInt();
+
+                while (set.contains(loc)){
+                    System.out.println("\n'" + user.toUpperCase() + "' Fill right box >>>");
+                    loc = in.nextInt();
+                }
+                set.add(loc);
+                play('P', loc);
 
             loc = random.nextInt(9);
             while (set.contains(loc)){
-                System.out.println("\nFill right box >>>");
+//                System.out.println("\nFill right box >>>");
                 loc = random.nextInt(9);
             }
             set.add(loc);
-            play('M', loc);
+            play('Q', loc);
 
             int win = win();
 
             if (win > 0){
                 printBoard();
-                winner(win);
+                winner(win, user, computer);
                 break;
             }
         }
+        }
     }
 
-    private static void winner(int win) {
+    private static void winner(int win, String player1, String player2) {
         char winner = ' ';
         if (win == 1 || win == 4 || win == 7){
             winner = board[0][0];
@@ -60,10 +116,14 @@ public class Main {
         else if (win == 6)
             winner = board[0][4];
 
-        if (winner == 'X')
-            System.out.println("Congratulations :) YOU WON");
-        if (winner == '0')
-            System.out.println("Sorry :( YOU LOSS");
+        if (winner == 'X') {
+            System.out.println("Congratulations :) " + player1);
+            System.out.println("Sorry :( " + player2);
+        }
+        if (winner == '0'){
+            System.out.println("Congratulations :) " + player2);
+            System.out.println("Sorry :( " + player1);
+        }
     }
 
     private static int win() {
@@ -89,47 +149,48 @@ public class Main {
     }
 
     private static void printBoard(){
-        for (int i = 0; i < board.length; i++) {
+
+        for (char[] chars : board) {
             for (int j = 0; j < board[0].length; j++) {
-                System.out.print(board[i][j] + " ");
+                System.out.print(chars[j] + " ");
             }
             System.out.println();
         }
+        System.out.println();
     }
     private static void play(char player, int loc){
         int x = 0;
         int y = 0;
 
-        if (loc == 1){
-            x = 0;
-            y = 0;
-        } else if (loc == 2){
-            x = 0;
-            y = 2;
-        } else if (loc == 3){
-            x = 0;
-            y = 4;
-        } else if (loc == 4){
-            x = 2;
-            y = 0;
-        } else if (loc == 5){
-            x = 2;
-            y = 2;
-        } else if (loc == 6){
-            x = 2;
-            y = 4;
-        } else if (loc == 7){
-            x = 4;
-            y = 0;
-        } else if (loc == 8){
-            x = 4;
-            y = 2;
-        } else if (loc == 9){
-            x = 4;
-            y = 4;
+        if (loc != 1) {
+            if (loc == 2){
+    //            x = 0;
+                y = 2;
+            } else if (loc == 3){
+    //            x = 0;
+                y = 4;
+            } else if (loc == 4){
+                x = 2;
+    //            y = 0;
+            } else if (loc == 5){
+                x = 2;
+                y = 2;
+            } else if (loc == 6){
+                x = 2;
+                y = 4;
+            } else if (loc == 7){
+                x = 4;
+    //            y = 0;
+            } else if (loc == 8){
+                x = 4;
+                y = 2;
+            } else if (loc == 9){
+                x = 4;
+                y = 4;
+            }
         }
 
-        if (player == 'U')
+        if (player == 'P')
             board[x][y] = 'X';
         else
             board[x][y] = '0';
